@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="GithubApp.ReleasePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GithubApp"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollView>
+        <ItemsControl Name="ReleaseView">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,10,0,10">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="5*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Margin="15">
+                            
+                            <TextBlock Text="{Binding FormatTime}" FontWeight="SemiBold"/>
+                            <StackPanel Orientation="Horizontal">
+                                <ImageIcon Width="16" Height="16" Source="{Binding AuthorIcon}"/>
+                                <HyperlinkButton Content="{Binding AuthorName}" ToolTipService.ToolTip="{Binding AuthorUri}" NavigateUri="{Binding AuthorUri}"/>
+                            </StackPanel>
+                            <HyperlinkButton Content="{Binding Tag}" ToolTipService.ToolTip="{Binding TagUri}" NavigateUri="{Binding TagUri}"/>
+
+                        </StackPanel>
+
+                        <Border Grid.Column="1" BorderBrush="LightGray" BorderThickness="1" CornerRadius="10">
+                            <StackPanel Margin="15">
+                                <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="24"/>
+                                <HyperlinkButton Content="See this Release Note on Github Website" NavigateUri="{Binding Uri}" ToolTipService.ToolTip="{Binding Uri}"/>
+
+                                <TextBlock Text="Assets" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                                <Border BorderBrush="LightGray" BorderThickness="1" CornerRadius="10">
+                                    <ItemsControl ItemsSource="{Binding Assets}" Margin="5">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+
+                                                <Grid>
+
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <HyperlinkButton Content="{Binding Name}" Margin="0,0,10,0" Grid.Column="0" ToolTipService.ToolTip="{Binding DownloadUri}" NavigateUri="{Binding DownloadUri}"/>
+                                                    <TextBlock Text="{Binding FormatSize}" Margin="0,0,100,0" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding FormatTime}" Grid.Column="2" VerticalAlignment="Center"/>
+
+                                                </Grid>
+
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Border>
+
+                            </StackPanel>
+                        </Border>
+
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </ScrollView>
+
+</Page>
