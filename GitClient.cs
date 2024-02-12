@@ -63,11 +63,6 @@ namespace GithubApp
             return await client.Repository.Content.GetReadme(owner, name);
         }
 
-        public async Task<string> GetReadmeHtmlAsync()
-        {
-            return await client.Repository.Content.GetReadmeHtml(owner, name);
-        }
-
         public async Task<IReadOnlyList<RepositoryContent>> GetAllContentsAsync()
         {
             return await client.Repository.Content.GetAllContents(owner, name);

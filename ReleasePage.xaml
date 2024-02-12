@@ -6,6 +6,7 @@
     xmlns:local="using:GithubApp"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:markdown="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d">
 
     <ScrollView>
@@ -33,7 +34,7 @@
                         <Border Grid.Column="1" BorderBrush="LightGray" BorderThickness="1" CornerRadius="10">
                             <StackPanel Margin="15">
                                 <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="24"/>
-                                <HyperlinkButton Content="See this Release Note on Github Website" NavigateUri="{Binding Uri}" ToolTipService.ToolTip="{Binding Uri}"/>
+                                <markdown:MarkdownTextBlock Text="{Binding Body}" ImageResolving="MarkdownTextBlock_ImageResolving"/>
 
                                 <TextBlock Text="Assets" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
 

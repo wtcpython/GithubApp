@@ -16,7 +16,7 @@ namespace GithubApp
         public string TagUri { get; set; }
 
         public string Title { get; set; }
-        public string Uri { get; set; }
+        public string Body { get; set; }
         public List<AssetInfo> Assets { get; set; }
     }
 
@@ -30,15 +30,17 @@ namespace GithubApp
 
     public sealed partial class ReleasePage : Page
     {
+        public GitClient client;
+
         public ReleasePage()
         {
             this.InitializeComponent();
+            client = HomePage.client;
             LoadIssuesData();
         }
 
         public async void LoadIssuesData()
         {
-            var client = HomePage.client;
             var releases = await client.GetReleasesAsync();
 
             List<ReleaseInfo> infos = releases.Select(x => new ReleaseInfo()
@@ -51,7 +53,7 @@ namespace GithubApp
                 TagUri = x.HtmlUrl,
 
                 Title = x.Name,
-                Uri = x.HtmlUrl,
+                Body = x.Body,
                 Assets = x.Assets.Select(asset => new AssetInfo()
                 {
                     Name = asset.Name,
@@ -62,6 +64,12 @@ namespace GithubApp
             }).ToList();
 
             ReleaseView.ItemsSource = infos;
+        }
+
+        private void MarkdownTextBlock_ImageResolving(object sender, CommunityToolkit.WinUI.UI.Controls.ImageResolvingEventArgs e)
+        {
+            e.Image = new BitmapImage(new Uri($"https://raw.githubusercontent.com/{client.owner}/{client.name}/main/" + e.Url));
+            e.Handled = true;
         }
     }
 }

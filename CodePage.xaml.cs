@@ -35,7 +35,6 @@ namespace GithubApp
         public IReadOnlyList<Octokit.RepositoryTag> tags;
         public IReadOnlyList<Octokit.Release> releases;
         public IReadOnlyList<Octokit.RepositoryLanguage> languages;
-        public Octokit.Readme readmeContent;
         IReadOnlyList<Octokit.GitHubCommit> commits;
         public Octokit.GitHubCommit latestCommit;
 
@@ -48,8 +47,6 @@ namespace GithubApp
 
         private async void LoadRepoData()
         {
-            await WebView.EnsureCoreWebView2Async();
-
             Octokit.Repository repo = await client.SetRepoInfo(HomePage.owner, HomePage.name);
 
             branches = await client.GetBranchesAsync();
@@ -129,9 +126,7 @@ namespace GithubApp
             HyperButtonBindingUri(repoTagButton, client.GetGithubBaseUri("tags"));
 
             // 仓库介绍
-            readmeContent = await client.GetReadmeAsync();
-            string readMeContent = await client.GetReadmeHtmlAsync();
-            WebView.NavigateToString(readMeContent);
+            markdown.Text = (await client.GetReadmeAsync()).Content;
 
             // 仓库其他信息
             licenseButton.Content = repo.License.Name;
@@ -157,26 +152,7 @@ namespace GithubApp
 
             chart.Series = series;
 
-            List<Octokit.RepositoryContributor> contributors = [.. await client.GetAllContributorsAsync()];
-
-            foreach (var contributor in contributors[..14])
-            {
-                HyperlinkButton button = new()
-                {
-                    Content = new ImageIcon()
-                    {
-                        Source = new BitmapImage()
-                        {
-                            UriSource = new Uri(contributor.AvatarUrl),
-                        },
-                        Width = 32,
-                        Height = 32,
-                    }
-                };
-                HyperButtonBindingUri(button, contributor.HtmlUrl);
-                contributorPanel.Children.Add(button);
-            }
-            
+            contributorView.ItemsSource = (await client.GetAllContributorsAsync()).Take(14);
 
             // 长耗时
             // Commits 总数量
@@ -238,6 +214,17 @@ namespace GithubApp
         {
             button.NavigateUri = new Uri(uri);
             ToolTipService.SetToolTip(button, uri);
+        }
+
+        private async void ContributorNaviate(object sender, ItemClickEventArgs e)
+        {
+            await Windows.System.Launcher.LaunchUriAsync(new Uri((e.ClickedItem as Octokit.RepositoryContributor).HtmlUrl));
+        }
+
+        private void MarkdownTextBlock_ImageResolving(object sender, CommunityToolkit.WinUI.UI.Controls.ImageResolvingEventArgs e)
+        {
+            e.Image = new BitmapImage(new Uri($"https://raw.githubusercontent.com/{client.owner}/{client.name}/main/" + e.Url));
+            e.Handled = true;
         }
     }
 } 
