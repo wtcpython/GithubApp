@@ -68,47 +68,22 @@
 
                         <DropDownButton Style="{StaticResource AccentButtonStyle}" Content="Code" Grid.Column="3" HorizontalAlignment="Right">
                             <DropDownButton.Flyout>
-                                <Flyout>
-                                    <Grid>
-
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition />
-                                            <RowDefinition />
-                                            <RowDefinition />
-                                            <RowDefinition />
-                                        </Grid.RowDefinitions>
-
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <FontIcon Glyph="&#xE756;" Grid.Column="0" HorizontalAlignment="Left"/>
-                                        <TextBlock Text="Clone" VerticalAlignment="Center" Grid.Column="1"/>
-                                        <HyperlinkButton Grid.Column="2" ToolTipService.ToolTip="Which remote URL should I use?" NavigateUri="https://docs.github.com/articles/which-remote-url-should-i-use">
-                                            <SymbolIcon Symbol="Help"/>
-                                        </HyperlinkButton>
-
-                                        <TextBlock FontWeight="Bold" Text="HTTPS" Margin="0,0,10,0" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0"/>
-                                        <TextBlock Name="httpsUri" MaxWidth="300" TextTrimming="CharacterEllipsis" Margin="0,0,10,0" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1"/>
-                                        <Button Name="httpsButton" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right">
-                                            <SymbolIcon Symbol="Copy"/>
-                                        </Button>
-
-                                        <TextBlock FontWeight="Bold" Text="SSH" Margin="0,0,10,0" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0"/>
-                                        <TextBlock Name="sshUri" MaxWidth="300" TextTrimming="CharacterEllipsis" Margin="0,0,10,0" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1"/>
-                                        <Button Name="sshButton"  Grid.Row="2" Grid.Column="2" HorizontalAlignment="Right">
-                                            <SymbolIcon Symbol="Copy"/>
-                                        </Button>
-
-                                        <TextBlock FontWeight="Bold" Text="Github CLI" Margin="0,0,10,0" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0"/>
-                                        <TextBlock Name="cliUri" MaxWidth="300" TextTrimming="CharacterEllipsis"  Margin="0,0,10,0" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1"/>
-                                        <Button Name="cliButton" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right">
-                                            <SymbolIcon Symbol="Copy"/>
-                                        </Button>
-
-                                    </Grid>
+                                <Flyout Placement="Bottom">
+                                    <ListView Name="itemsView">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate x:DataType="local:CloneUriInfo">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock FontWeight="Bold" Width="80" Text="{Binding Method}" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding Uri}" Width="280" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                                    <AppBarButton CommandParameter="{x:Bind Uri}" Width="48" Height="48">
+                                                        <AppBarButton.Command>
+                                                            <StandardUICommand Kind="Copy" ExecuteRequested="CommandExecuteRequested" Label=""/>
+                                                        </AppBarButton.Command>
+                                                    </AppBarButton>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
                                 </Flyout>
                             </DropDownButton.Flyout>
                         </DropDownButton>
@@ -164,12 +139,13 @@
 
                     <controls:WrapPanel Name="topicPanel"/>
 
-                    <HyperlinkButton Name="readmeButton" Content="Readme"/>
-                    <HyperlinkButton Name="licenseButton" Content="License"/>
-                    <HyperlinkButton Name="activityButton" Content="Activity"/>
-                    <HyperlinkButton Name="starButton" Content="Star Count"/>
-                    <HyperlinkButton Name="watchingButton" Content="Watch Count"/>
-                    <HyperlinkButton Name="forkButton" Content="Fork Count"/>
+                    <ListView Name="repoInfoView">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <HyperlinkButton Content="{Binding Key}" NavigateUri="{Binding Value}" ToolTipService.ToolTip="{Binding Value}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
 
                     <Border Height="1" BorderThickness="1" BorderBrush="LightGray"/>
 

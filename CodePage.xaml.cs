@@ -2,6 +2,7 @@ using LiveChartsCore.SkiaSharpView;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
@@ -24,7 +25,6 @@ namespace GithubApp
     {
         public string Method { get; set; }
         public string Uri { get; set; }
-        public RoutedEventHandler CopyToClip { get; set; }
     }
 
     public sealed partial class CodePage : Page
@@ -71,31 +71,23 @@ namespace GithubApp
 
             ShowRepoFile();
 
-            // https URL
-            httpsUri.Text = repo.CloneUrl;
-            httpsButton.Click += (sender, e) =>
+            itemsView.ItemsSource = new List<CloneUriInfo>()
             {
-                DataPackage package = new();
-                package.SetText(repo.CloneUrl);
-                Clipboard.SetContent(package);
-            };
-
-            // SSH URL
-            sshUri.Text = repo.SshUrl;
-            sshButton.Click += (sender, e) =>
-            {
-                DataPackage package = new();
-                package.SetText(repo.SshUrl);
-                Clipboard.SetContent(package);
-            };
-
-            // Github Cli URL
-            cliUri.Text = $"gh repo clone {repo.Owner.Login} / {repo.Name}";
-            cliButton.Click += (sender, e) =>
-            {
-                DataPackage package = new();
-                package.SetText(cliUri.Text);
-                Clipboard.SetContent(package);
+                new()
+                {
+                    Method = "HTTPS",
+                    Uri = repo.CloneUrl,
+                },
+                new()
+                {
+                    Method = "SSH",
+                    Uri = repo.SshUrl
+                },
+                new()
+                {
+                    Method = "Github CLI",
+                    Uri = $"gh repo clone {repo.Owner.Login} / {repo.Name}"
+                }
             };
 
             repoDescription.Text = repo.Description;
@@ -125,14 +117,19 @@ namespace GithubApp
             repoTagButton.Content = $"{Utils.FormatNumber(tags.Count)} tags";
             HyperButtonBindingUri(repoTagButton, client.GetGithubBaseUri("tags"));
 
-            // 仓库介绍
+            // 仓库介绍 和仓库信息
             markdown.Text = (await client.GetReadmeAsync()).Content;
 
-            // 仓库其他信息
-            licenseButton.Content = repo.License.Name;
-            starButton.Content = $"{Utils.FormatNumber(repo.StargazersCount)} stars";
-            watchingButton.Content = $"{Utils.FormatNumber(repo.SubscribersCount)} watching";
-            forkButton.Content = $"{Utils.FormatNumber(repo.ForksCount)} forks";
+            Dictionary<string, string> repoInfoDict = new()
+            {
+                { "Readme", client.GetGithubBaseUri() + "#readme" },
+                { "License", repo.License.Url },
+                { "Activity", client.GetGithubBaseUri() + "/activity" },
+                { $"{Utils.FormatNumber(repo.StargazersCount)} stars", client.GetGithubBaseUri() + "/stargazers" },
+                { $"{Utils.FormatNumber(repo.SubscribersCount)} watching", client.GetGithubBaseUri() + "/watchers" },
+                { $"{Utils.FormatNumber(repo.ForksCount)} forks", client.GetGithubBaseUri() + "/forks" }
+            };
+            repoInfoView.ItemsSource = repoInfoDict;
 
             ShowReleaseInfo();
 
@@ -225,6 +222,19 @@ namespace GithubApp
         {
             e.Image = new BitmapImage(new Uri($"https://raw.githubusercontent.com/{client.owner}/{client.name}/main/" + e.Url));
             e.Handled = true;
+        }
+
+        private void CommandExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)
+        {
+            foreach (CloneUriInfo info in itemsView.ItemsSource as List<CloneUriInfo>)
+            {
+                if (info.Uri == (string)args.Parameter)
+                {
+                    DataPackage package = new();
+                    package.SetText(info.Uri);
+                    Clipboard.SetContent(package);
+                }
+            }
         }
     }
 } 
