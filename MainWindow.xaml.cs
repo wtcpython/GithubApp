@@ -60,14 +60,12 @@ namespace GithubApp
         private void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
             string tag = (string)(args.SelectedItem as NavigationViewItem).Tag;
-            if (tag == "HomePage") ContentFrame.Navigate(typeof(HomePage));
-            else if (tag == "CodePage") ContentFrame.Navigate(typeof(CodePage));
-            else if (tag == "MessagePage")
+            if (tag == "MessagePage")
             {
                 MessagePage.Status = (string)(args.SelectedItem as NavigationViewItem).Content;
                 ContentFrame.Navigate(typeof(MessagePage));
             }
-            else if (tag == "ReleasePage") ContentFrame.Navigate(typeof(ReleasePage));
+            else ContentFrame.Navigate(Type.GetType("GithubApp." + tag));
         }
 
         private void StartSearch(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
