@@ -218,10 +218,15 @@ namespace GithubApp
             await Windows.System.Launcher.LaunchUriAsync(new Uri((e.ClickedItem as Octokit.RepositoryContributor).HtmlUrl));
         }
 
-        private void MarkdownTextBlock_ImageResolving(object sender, CommunityToolkit.WinUI.UI.Controls.ImageResolvingEventArgs e)
+        private void MarkdownImageResolving(object sender, CommunityToolkit.WinUI.UI.Controls.ImageResolvingEventArgs e)
         {
             e.Image = new BitmapImage(new Uri($"https://raw.githubusercontent.com/{client.owner}/{client.name}/main/" + e.Url));
             e.Handled = true;
+        }
+
+        private async void MarkdownLinkClicked(object sender, CommunityToolkit.WinUI.UI.Controls.LinkClickedEventArgs e)
+        {
+            await Windows.System.Launcher.LaunchUriAsync(new Uri(e.Link));
         }
 
         private void CommandExecuteRequested(XamlUICommand sender, ExecuteRequestedEventArgs args)

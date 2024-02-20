@@ -127,7 +127,9 @@
                         </ListView.ItemTemplate>
                     </ListView>
 
-                    <markdown:MarkdownTextBlock x:Name="markdown" ImageResolving="MarkdownTextBlock_ImageResolving"/>
+                    <markdown:MarkdownTextBlock
+                        x:Name="markdown" ImageResolving="MarkdownImageResolving"
+                        LinkClicked="MarkdownLinkClicked"/>
 
                 </StackPanel>
 
