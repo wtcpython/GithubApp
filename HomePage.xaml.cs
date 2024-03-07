@@ -1,5 +1,4 @@
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,25 +7,11 @@ using System.Threading.Tasks;
 
 namespace GithubApp
 {
-    public class SearchResult
-    {
-        public string RepoName { get; set; }
-        public BitmapImage OwnerIcon { get; set; }
-        public string Description { get; set; }
-        public List<string> Topics { get; set; }
-        public string Language { get; set; }
-        public int Stars { get; set; }
-        public string FormatStar { get; set; }
-        public DateTime UpdatedTime { get; set; }
-        public string FormatUpdatedTime { get; set; }
-        public int Forks { get; set; }
-    }
-
     public sealed partial class HomePage : Page
     {
         public static string searchText, owner, name, token;
 
-        public static List<SearchResult> SearchList, SelectedList, EmptyList;
+        public static List<Octokit.Repository> SearchList, SelectedList, EmptyList;
 
         public static GitClient client = new("GithubApp");
 
@@ -65,19 +50,7 @@ namespace GithubApp
             var languages = searchResults.Items.Select(x => x.Language).Where(x => x != string.Empty && x != null).Distinct().Take(10).ToList();
             languagesView.ItemsSource = languages;
 
-            SearchList = searchResults.Items.Select(x => new SearchResult
-            {
-                RepoName = x.Owner.Login + "/" + x.Name,
-                OwnerIcon = new BitmapImage(new Uri(x.Owner.AvatarUrl)),
-                Description = x.Description,
-                Topics = x.Topics.Take(5).ToList(),
-                Language = x.Language,
-                Stars = x.StargazersCount,
-                FormatStar = $"Stars: {Utils.FormatNumber(x.StargazersCount)}",
-                UpdatedTime = x.UpdatedAt.LocalDateTime,
-                FormatUpdatedTime = $"Updated {Utils.FormatTimeSpan(x.UpdatedAt.LocalDateTime)}",
-                Forks = x.ForksCount,
-            }).ToList();
+            SearchList = searchResults.Items.ToList();
             SelectedList = SearchList;
 
             SortBox.SelectedIndex = 0;
@@ -108,27 +81,27 @@ namespace GithubApp
             SearchResultView.ItemsSource = EmptyList;
             if (index == 0)
             {
-                SelectedList.Sort((s1, s2) => { return s2.Stars.CompareTo(s1.Stars); });
+                SelectedList.Sort((s1, s2) => { return s2.StargazersCount.CompareTo(s1.StargazersCount); });
             }
             else if (index == 1)
             {
-                SelectedList.Sort((s1, s2) => { return s1.Stars.CompareTo(s2.Stars); });
+                SelectedList.Sort((s1, s2) => { return s1.StargazersCount.CompareTo(s2.StargazersCount); });
             }
             else if (index == 2)
             {
-                SelectedList.Sort((s1, s2) => { return s2.Forks.CompareTo(s1.Forks); });
+                SelectedList.Sort((s1, s2) => { return s2.ForksCount.CompareTo(s1.ForksCount); });
             }
             else if (index == 3)
             {
-                SelectedList.Sort((s1, s2) => { return s1.Forks.CompareTo(s2.Forks); });
+                SelectedList.Sort((s1, s2) => { return s1.ForksCount.CompareTo(s2.ForksCount); });
             }
             else if (index == 4)
             {
-                SelectedList.Sort((s1, s2) => { return s2.UpdatedTime.CompareTo(s1.UpdatedTime); });
+                SelectedList.Sort((s1, s2) => { return s2.UpdatedAt.LocalDateTime.CompareTo(s1.UpdatedAt.LocalDateTime); });
             }
             else if (index == 5)
             {
-                SelectedList.Sort((s1, s2) => { return s1.UpdatedTime.CompareTo(s2.UpdatedTime); });
+                SelectedList.Sort((s1, s2) => { return s1.UpdatedAt.LocalDateTime.CompareTo(s2.UpdatedAt.LocalDateTime); });
             }
             SearchResultView.ItemsSource = SelectedList;
         }

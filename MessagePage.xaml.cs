@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace GithubApp
@@ -14,7 +15,7 @@ namespace GithubApp
     {
         public static string Status;
         public static GitClient client = HomePage.client;
-        public static List<MessageInfo> infos, EmptyList;
+        public ObservableCollection<MessageInfo> messages = [];
 
         public MessagePage()
         {
@@ -34,14 +35,14 @@ namespace GithubApp
         {
             var issues = await client.GetIssuesAsync();
 
-            infos = issues.Select(x => new MessageInfo()
+            messages = new(issues.Select(x => new MessageInfo()
             {
                 Title = x.Title,
                 Info = $"# {x.Number} opened {Utils.FormatTimeSpan(x.CreatedAt.LocalDateTime)} by {x.User.Login}",
                 Labels = x.Labels
-            }).ToList();
+            }));
 
-            MessageView.ItemsSource = infos;
+            MessageView.ItemsSource = messages;
             SearchBox.IsEnabled = true;
         }
 
@@ -49,14 +50,14 @@ namespace GithubApp
         {
             var pulls = await client.GetPullRequestsAsync();
 
-            infos = pulls.Select(x => new MessageInfo()
+            messages = new(pulls.Select(x => new MessageInfo()
             {
                 Title= x.Title,
                 Info = $"# {x.Number} opened {Utils.FormatTimeSpan(x.CreatedAt.LocalDateTime)} by {x.User.Login}",
                 Labels = x.Labels
-            }).ToList();
+            }));
 
-            MessageView.ItemsSource= infos;
+            MessageView.ItemsSource= messages;
             SearchBox.IsEnabled = true;
         }
 
@@ -65,16 +66,14 @@ namespace GithubApp
             if (e.Key == Windows.System.VirtualKey.Enter)
             {
                 SearchBox.IsEnabled = false;
-                MessageView.ItemsSource = EmptyList;
                 if (SearchBox.Text.Trim() != string.Empty)
                 {
-                    var result = infos.Where(info => info.Title.Contains(SearchBox.Text.Trim()));
-
+                    var result = messages.Where(info => info.Title.Contains(SearchBox.Text.Trim()));
                     MessageView.ItemsSource = result;
                 }
                 else
                 {
-                    MessageView.ItemsSource = infos;
+                    MessageView.ItemsSource = messages;
                 }
                 SearchBox.IsEnabled = true;
             }

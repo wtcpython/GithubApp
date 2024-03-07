@@ -51,9 +51,17 @@
 
                             <StackPanel Margin="5">
 
-                                <StackPanel Orientation="Horizontal">
-                                    <ImageIcon Width="16" Height="16" Source="{Binding OwnerIcon}"/>
-                                    <HyperlinkButton Content="{Binding RepoName}" Click="ButtonClick"/>
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <ImageIcon Width="16" Height="16" Source="{Binding Owner.AvatarUrl}"/>
+                                    <HyperlinkButton Click="ButtonClick">
+                                        <HyperlinkButton.Content>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Owner.Login}"/>
+                                                <TextBlock Text=" / "/>
+                                                <TextBlock Text="{Binding Name}"/>
+                                            </StackPanel>
+                                        </HyperlinkButton.Content>
+                                    </HyperlinkButton>
                                 </StackPanel>
 
                                 <TextBlock Text="{Binding Description}" Margin="0,0,0,10" TextWrapping="Wrap"/>
@@ -66,15 +74,15 @@
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Button Content="{Binding}" Margin="0,0,10,0"/>
+                                            <HyperlinkButton Content="{Binding}" Margin="0,0,10,0"/>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
 
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Language}" Margin="0,0,20,0"/>
-                                    <TextBlock Text="{Binding FormatStar}" Margin="0,0,20,0"/>
-                                    <TextBlock Text="{Binding FormatUpdatedTime}" Margin="0,0,0,0"/>
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="{Binding Language}"/>
+                                    <TextBlock Text="{Binding StargazersCount}"/>
+                                    <TextBlock Text="{Binding UpdatedAt.LocalDateTime}"/>
                                 </StackPanel>
 
                             </StackPanel>
@@ -83,7 +91,6 @@
                     </ListView.ItemTemplate>
                 </ListView>
             </ScrollViewer>
-
         </Grid>
     </Grid>
     
