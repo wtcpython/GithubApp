@@ -68,7 +68,7 @@
                 <NavigationViewItem Content="Release" Tag="ReleasePage"/>
             </NavigationView.MenuItems>
 
-            <Frame x:Name="ContentFrame" Padding="20,10" Navigated="ContentFrame_Navigated"/>
+            <Frame x:Name="ContentFrame" Navigated="ContentFrame_Navigated"/>
         </NavigationView>
     </Grid>
 

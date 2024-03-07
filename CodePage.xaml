@@ -12,7 +12,7 @@
     mc:Ignorable="d">
 
     <ScrollView>
-        <StackPanel>
+        <StackPanel Margin="15">
             <Grid VerticalAlignment="Top">
 
                 <Grid.ColumnDefinitions>
