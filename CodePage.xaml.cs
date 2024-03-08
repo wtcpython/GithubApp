@@ -1,4 +1,3 @@
-using LiveChartsCore.SkiaSharpView;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -25,6 +24,12 @@ namespace GithubApp
     {
         public string Method { get; set; }
         public string Uri { get; set; }
+    }
+
+    public class LangInfo
+    {
+        public string Name { get; set; }
+        public double Value { get; set; }
     }
 
     public sealed partial class CodePage : Page
@@ -137,17 +142,13 @@ namespace GithubApp
 
             long sum = languages.Sum(language => language.NumberOfBytes);
 
-            List<PieSeries<double>> series = languages
-                .Where(language => language.NumberOfBytes > sum * 0.001)
-                .Select(language => new PieSeries<double>()
-                {
-                    Name = language.Name,
-                    Values = [Math.Round((double)language.NumberOfBytes / sum, 3)],
-                    ToolTipLabelFormatter = (value) => $"{value.Label} {value.Coordinate.PrimaryValue:P1}"
-                })
-                .ToList();
-
-            chart.Series = series;
+            langView.ItemsSource = languages
+                .Where(language => language.NumberOfBytes >= sum * 0.005)
+                .Select(x => new LangInfo()
+            {
+                Name = x.Name,
+                Value = Math.Round((double)x.NumberOfBytes / sum, 3) * 100
+            });
 
             contributorView.ItemsSource = (await client.GetAllContributorsAsync()).Take(14);
 

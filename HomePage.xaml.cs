@@ -60,9 +60,9 @@ namespace GithubApp
         private void ButtonClick(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
             var button = sender as HyperlinkButton;
-            var content = (string)button.Content;
-            owner = content.Split("/")[0];
-            name = content.Split("/")[1];
+            var items = (button.Content as StackPanel).Children.OfType<TextBlock>();
+            owner = items.ElementAt(0).Text;
+            name = items.ElementAt(2).Text;
             (App.Window as MainWindow).Navigate(typeof(CodePage));
         }
 

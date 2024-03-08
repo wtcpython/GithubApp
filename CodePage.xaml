@@ -8,7 +8,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     xmlns:markdown="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:view="using:LiveChartsCore.SkiaSharpView.WinUI"
     mc:Ignorable="d">
 
     <ScrollView>
@@ -112,8 +111,8 @@
 
                     </Grid>
 
-                    <ListView Name="FileListView" Margin="0,10,0,0">
-                        <ListView.ItemTemplate>
+                    <ItemsControl Name="FileListView" Margin="0,10,0,0">
+                        <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <controls:SettingsCard Content="{Binding Type}">
                                     <controls:SettingsCard.Header>
@@ -124,8 +123,8 @@
                                     </controls:SettingsCard.Header>
                                 </controls:SettingsCard>
                             </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
 
                     <markdown:MarkdownTextBlock
                         x:Name="markdown" ImageResolving="MarkdownImageResolving"
@@ -141,13 +140,13 @@
 
                     <controls:WrapPanel Name="topicPanel"/>
 
-                    <ListView Name="repoInfoView">
-                        <ListView.ItemTemplate>
+                    <ItemsControl Name="repoInfoView">
+                        <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <HyperlinkButton Content="{Binding Key}" NavigateUri="{Binding Value}" ToolTipService.ToolTip="{Binding Value}"/>
                             </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
 
                     <Border Height="1" BorderThickness="1" BorderBrush="LightGray"/>
 
@@ -177,7 +176,20 @@
 
                     <TextBlock Text="Languages" FontWeight="Bold" FontSize="18"/>
 
-                    <view:PieChart Name="chart" Height="200"/>
+                    <ListView Name="langView">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ToolTipService.ToolTip="{Binding Value}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Name}" Grid.Column="0"/>
+                                    <ProgressBar Value="{Binding Value}" Grid.Column="1"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
 
                 </StackPanel>
 
