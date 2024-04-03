@@ -138,7 +138,7 @@
 
                     <TextBlock Name="repoDescription" Text="Description" TextWrapping="Wrap"/>
 
-                    <controls:WrapPanel Name="topicPanel"/>
+                    <controls:WrapPanel x:Name="topicPanel"/>
 
                     <ItemsControl Name="repoInfoView">
                         <ItemsControl.ItemTemplate>
