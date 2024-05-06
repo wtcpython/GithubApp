@@ -1,3 +1,4 @@
+using CommunityToolkit.Labs.WinUI.MarkdownTextBlock;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
@@ -6,7 +7,7 @@ using System.Linq;
 
 namespace GithubApp
 {
-    public class ReleaseInfo()
+    public class ReleaseInfo
     {
         public string FormatTime { get; set; }
         public BitmapImage AuthorIcon { get; set; }
@@ -18,9 +19,11 @@ namespace GithubApp
         public string Title { get; set; }
         public string Body { get; set; }
         public List<AssetInfo> Assets { get; set; }
+
+        public MarkdownConfig Config = new();
     }
 
-    public class AssetInfo()
+    public class AssetInfo
     {
         public string Name { get; set; }
         public string FormatSize { get; set; }
@@ -64,12 +67,6 @@ namespace GithubApp
             }).ToList();
 
             ReleaseView.ItemsSource = infos;
-        }
-
-        private void MarkdownTextBlock_ImageResolving(object sender, CommunityToolkit.WinUI.UI.Controls.ImageResolvingEventArgs e)
-        {
-            e.Image = new BitmapImage(new Uri($"https://raw.githubusercontent.com/{client.owner}/{client.name}/main/" + e.Url));
-            e.Handled = true;
         }
     }
 }
